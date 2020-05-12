@@ -119,6 +119,7 @@ module.exports = function(schema, option) {
 
   // parse layer props(static values or expression)
   const parseProps = (value, isReactNode, constantName) => {
+    console.log(`constantName: ${constantName}, ${value}`)
     // console.log(`parseProps:`, value, isReactNode, constantName);
     if (typeof value === 'string') {
       if (isExpression(value)) {
@@ -130,13 +131,13 @@ module.exports = function(schema, option) {
       }
 
       if (isReactNode) {
-        defaultProps[constantName] = value;
-        return `{{${constantName}}}`;
-      } else if (constantName) { // save to constant
+        defaultProps[_.camelCase(constantName)] = value;
+        return `{{${_.camelCase(constantName)}}}`;
+      } else if (_.camelCase(constantName)) { // save to constant
         // expressionName[constantName] = expressionName[constantName] ? expressionName[constantName] + 1 : 1;
         // const name = `${constantName}${expressionName[constantName]}`;
-        defaultProps[constantName] = value;
-        return `"${constantName}"`;
+        defaultProps[_.camelCase(constantName)] = value;
+        return `"${_.camelCase(constantName)}"`;
       } else {
         return `"${value}"`;
       }
@@ -276,7 +277,7 @@ module.exports = function(schema, option) {
     let props = '';
 
     Object.keys(schema.props).forEach((key) => {
-      if (['className', 'style', 'text', 'src', 'hm-component', 'responsive'].indexOf(key) === -1) {
+      if (['className', 'style', 'text', 'src', 'hm-component', 'responsive', 'lines'].indexOf(key) === -1) {
         props += ` ${parsePropsKey(key, schema.props[key])}="${parseProps(schema.props[key])}"`;
       }
     })
