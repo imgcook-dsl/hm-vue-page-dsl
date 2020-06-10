@@ -91,8 +91,13 @@ module.exports = function(schema, option) {
       let value = style[key];
       if (boxStyleList.indexOf(key) != -1) {
         // 默认采用vw布局
-        value = (parseInt(value) * _w).toFixed(2);
-        value = value == 0 ? value : (value*100/1920).toFixed(2) + 'vw';
+        if (toVW) {
+          value = (parseInt(value) * _w).toFixed(2);
+          value = value == 0 ? value : (value*100/1920).toFixed(2) + 'vw';
+        } else {
+          value = (parseInt(value)).toFixed(2);
+          value = value == 0 ? value : value + 'px';
+        }
         styleData.push(`${_.kebabCase(key)}: ${value}`);
       } else if (noUnitStyles.indexOf(key) != -1) {
         // console.log('key: ', key, value);
